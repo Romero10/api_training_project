@@ -1,5 +1,6 @@
 package api.training.services;
 
+import api.training.dto.TokenDto;
 import api.training.requests.PostRequest;
 import api.training.services.end_points.EndPoints;
 import org.apache.http.NameValuePair;
@@ -15,7 +16,7 @@ public class AuthenticationService extends BaseService {
 
 	private static AuthenticationService instance = null;
 
-	private static final Map<String, String> tokens = new HashMap<>();
+	private static volatile Map<String, TokenDto> tokens = new HashMap<>();
 
 	private AuthenticationService() {
 	}
@@ -27,8 +28,7 @@ public class AuthenticationService extends BaseService {
 		return instance;
 	}
 
-	public String getToken(String scope) {
-		String token;
+	public synchronized TokenDto getToken(String scope) {
 		if (!tokens.containsKey(scope)) {
 			List<NameValuePair> params = new ArrayList<>();
 			params.add(new BasicNameValuePair("grant_type", "client_credentials"));
@@ -39,11 +39,8 @@ public class AuthenticationService extends BaseService {
 			postRequest.setParams(params);
 
 			CloseableHttpResponse response = client.postRequest(postRequest.getHttpPost());
-			token = client.parseResponse(response);
-			tokens.put(scope, token);
-		} else {
-			token = tokens.get(scope);
+			tokens.put(scope, client.parseResponseTo(TokenDto.class, response));
 		}
-		return token;
+		return tokens.get(scope);
 	}
 }

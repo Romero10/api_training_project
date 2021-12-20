@@ -1,5 +1,6 @@
 package api.training.requests;
 
+import api.training.exceptions.Exceptions;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -21,7 +22,7 @@ public class PostRequest {
 		try {
 			httpPost.setURI(new URI(uri));
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			throw new Exceptions.SetURIException();
 		}
 	}
 
@@ -29,7 +30,7 @@ public class PostRequest {
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(params));
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw new Exceptions.SetEntityException();
 		}
 	}
 
