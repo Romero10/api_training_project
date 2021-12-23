@@ -1,5 +1,7 @@
 package api.training.services.end_points;
 
+import api.training.config.Config;
+
 public class EndPoints {
 
 	private static final String BASE_URL = Config.getConfig().getUrl();

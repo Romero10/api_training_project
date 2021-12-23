@@ -4,6 +4,8 @@ import api.training.exceptions.Exceptions;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -32,6 +34,18 @@ public class PostRequest {
 		} catch (UnsupportedEncodingException e) {
 			throw new Exceptions.SetEntityException(e);
 		}
+	}
+
+	public void setParams(String params) {
+		try {
+			httpPost.setEntity(new StringEntity(params));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void setHeader(List<Header> headers) {
+		httpPost.setHeaders(headers.toArray(new Header[0]));
 	}
 
 	public HttpPost getHttpPost() {
