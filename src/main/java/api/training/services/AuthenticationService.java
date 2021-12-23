@@ -1,15 +1,12 @@
 package api.training.services;
 
 import api.training.dto.TokenDto;
-import api.training.requests.PostRequest;
 import api.training.services.end_points.EndPoints;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AuthenticationService extends BaseService {
@@ -30,15 +27,13 @@ public class AuthenticationService extends BaseService {
 
 	public synchronized TokenDto getToken(String scope) {
 		if (!tokens.containsKey(scope)) {
-			List<NameValuePair> params = new ArrayList<>();
-			params.add(new BasicNameValuePair("grant_type", "client_credentials"));
-			params.add(new BasicNameValuePair("scope", scope));
+			HttpUriRequest request = RequestBuilder.post()
+					.setUri(EndPoints.AUTH)
+					.addParameter("grant_type", "client_credentials")
+					.addParameter("scope", scope)
+					.build();
 
-			PostRequest postRequest = new PostRequest();
-			postRequest.setURI(EndPoints.AUTH);
-			postRequest.setParams(params);
-
-			CloseableHttpResponse response = client.postRequest(postRequest.getHttpPost());
+			CloseableHttpResponse response = client.request(request);
 			tokens.put(scope, client.parseResponseTo(TokenDto.class, response));
 		}
 		return tokens.get(scope);
