@@ -35,7 +35,7 @@ public class AuthenticationService extends BaseService {
 			params.add(new BasicNameValuePair("scope", scope));
 
 			PostRequest postRequest = new PostRequest();
-			postRequest.setURI(config.getUrl() + EndPoints.AUTH);
+			postRequest.setURI(EndPoints.AUTH);
 			postRequest.setParams(params);
 
 			CloseableHttpResponse response = client.postRequest(postRequest.getHttpPost());

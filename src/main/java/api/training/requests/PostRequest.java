@@ -22,7 +22,7 @@ public class PostRequest {
 		try {
 			httpPost.setURI(new URI(uri));
 		} catch (URISyntaxException e) {
-			throw new Exceptions.SetURIException();
+			throw new Exceptions.SetURIException(e);
 		}
 	}
 
@@ -30,7 +30,7 @@ public class PostRequest {
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(params));
 		} catch (UnsupportedEncodingException e) {
-			throw new Exceptions.SetEntityException();
+			throw new Exceptions.SetEntityException(e);
 		}
 	}
 

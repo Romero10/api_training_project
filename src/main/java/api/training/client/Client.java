@@ -2,6 +2,7 @@ package api.training.client;
 
 import api.training.exceptions.Exceptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -12,6 +13,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Client {
 
@@ -25,13 +27,14 @@ public class Client {
 		mapper = new ObjectMapper();
 	}
 
-	public CloseableHttpResponse getRequest(String url) {
+	public CloseableHttpResponse getRequest(String url, List<Header> headers) {
 		CloseableHttpResponse response;
 		HttpGet httpGet = new HttpGet(url);
+		httpGet.setHeaders(headers.toArray(new Header[0]));
 		try {
 			response = httpClient.execute(httpGet);
 		} catch (IOException e) {
-			throw new Exceptions.GetRequestException();
+			throw new Exceptions.GetRequestException(e);
 		}
 		return response;
 	}
@@ -41,7 +44,7 @@ public class Client {
 		try {
 			response = httpClient.execute(httpPost);
 		} catch (IOException e) {
-			throw new Exceptions.PostRequestException();
+			throw new Exceptions.PostRequestException(e);
 		}
 		return response;
 	}
@@ -52,7 +55,7 @@ public class Client {
 			HttpEntity entity = httpResponse.getEntity();
 			response = EntityUtils.toString(entity);
 		} catch (Exception e) {
-			throw new Exceptions.ResponseParseToStringException();
+			throw new Exceptions.ResponseParseToStringException(e);
 		}
 		return response;
 	}
@@ -63,7 +66,7 @@ public class Client {
 			String jsonString = EntityUtils.toString(httpResponse.getEntity());
 			obj = mapper.reader().forType(aClass).readValue(jsonString);
 		} catch (Exception e) {
-			throw new Exceptions.ResponseMappingToModelException();
+			throw new Exceptions.ResponseMappingToModelException(e);
 		}
 		return obj;
 	}
