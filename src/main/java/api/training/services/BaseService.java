@@ -31,4 +31,8 @@ public class BaseService {
 		TokenDto token = AuthenticationService.getInstance().getToken(scope);
 		return new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token.getAccessToken());
 	}
+
+	protected static void closeResponse() {
+		client.closeResponse();
+	}
 }

@@ -31,6 +31,7 @@ public class ZipCodeService extends BaseService {
 		int statusCode = response.getStatusLine().getStatusCode();
 		List<String> listOfZipCodes = Arrays.stream(client.parseResponseTo(String[].class, response))
 				.collect(Collectors.toList());
+		closeResponse();
 		return Pair.of(statusCode, listOfZipCodes);
 	}
 
@@ -43,6 +44,7 @@ public class ZipCodeService extends BaseService {
 				.setEntity(new StringEntity(zipCodes.toString(), ContentType.APPLICATION_JSON))
 				.build();
 		CloseableHttpResponse response = client.request(request);
+		closeResponse();
 		return response.getStatusLine().getStatusCode();
 	}
 }

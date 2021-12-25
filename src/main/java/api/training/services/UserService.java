@@ -32,6 +32,7 @@ public class UserService extends BaseService {
 		int statusCode = response.getStatusLine().getStatusCode();
 		List<UserDto> listOfZipCodes = Arrays.stream(client.parseResponseTo(UserDto[].class, response))
 				.collect(Collectors.toList());
+		closeResponse();
 		return Pair.of(statusCode, listOfZipCodes);
 	}
 
@@ -44,6 +45,7 @@ public class UserService extends BaseService {
 				.setEntity(new StringEntity(userDto.toString(), ContentType.APPLICATION_JSON))
 				.build();
 		CloseableHttpResponse response = client.request(request);
+		closeResponse();
 		return response.getStatusLine().getStatusCode();
 	}
 }

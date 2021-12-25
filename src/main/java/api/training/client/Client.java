@@ -16,6 +16,7 @@ public class Client {
 
 	private final CloseableHttpClient httpClient;
 	private final ObjectMapper mapper;
+	private CloseableHttpResponse response;
 
 	public Client(CredentialsProvider provider) {
 		httpClient = HttpClientBuilder.create()
@@ -25,7 +26,6 @@ public class Client {
 	}
 
 	public CloseableHttpResponse request(HttpUriRequest request) {
-		CloseableHttpResponse response;
 		try {
 			response = httpClient.execute(request);
 		} catch (IOException e) {
@@ -34,15 +34,25 @@ public class Client {
 		return response;
 	}
 
+	public void closeResponse() {
+		try {
+			if (response != null) {
+				response.close();
+			}
+		} catch (IOException e) {
+			throw new Exceptions.CloseResponseException(e);
+		}
+	}
+
 	public String parseResponse(CloseableHttpResponse httpResponse) {
-		String response;
+		String responseHttp;
 		try {
 			HttpEntity entity = httpResponse.getEntity();
-			response = EntityUtils.toString(entity);
+			responseHttp = EntityUtils.toString(entity);
 		} catch (Exception e) {
 			throw new Exceptions.ResponseParseToStringException(e);
 		}
-		return response;
+		return responseHttp;
 	}
 
 	public <T> T parseResponseTo(Class<T> aClass, CloseableHttpResponse httpResponse) {

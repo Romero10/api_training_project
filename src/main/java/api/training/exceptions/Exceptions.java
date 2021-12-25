@@ -26,4 +26,10 @@ public class Exceptions {
 			super("Response value cannot be mapped to model.", e);
 		}
 	}
+
+	public static class CloseResponseException extends RuntimeException {
+		public CloseResponseException(Exception e) {
+			super("The response cannot be closed.", e);
+		}
+	}
 }
