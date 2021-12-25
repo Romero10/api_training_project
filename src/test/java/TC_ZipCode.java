@@ -2,6 +2,8 @@ import api.training.dto.Sex;
 import api.training.dto.UserDto;
 import api.training.services.UserService;
 import api.training.services.ZipCodeService;
+import com.beust.jcommander.internal.Lists;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
 import org.testng.Assert;
@@ -16,18 +18,15 @@ import java.util.List;
 
 public class TC_ZipCode {
 
-	private final static String NAME = "Maxim";
-	private final static int AGE = 14;
-	private final static Sex SEX = Sex.MALE;
-
 	private List<String> zipCodes;
 	private String randomUsedZipCode;
 
 	private SoftAssert softAssert;
 
 	@BeforeClass
-	public void createUser() {
+	public void createZipCodeAndUser() {
 		List<UserDto> usersList = UserService.getUsers().second();
+		ZipCodeService.addZipCodes(Lists.newArrayList(RandomUtils.nextInt(100000, 999999)));
 
 		if (usersList.size() == 0) {
 			Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
@@ -35,9 +34,9 @@ public class TC_ZipCode {
 					.get(RandomUtils.nextInt(0, availableZipCodes.second().size() - 1));
 
 			UserDto userDto = new UserDto();
-			userDto.setName(NAME);
-			userDto.setAge(AGE);
-			userDto.setSex(SEX);
+			userDto.setName(RandomStringUtils.randomAlphabetic(6));
+			userDto.setAge(RandomUtils.nextInt(1, 99));
+			userDto.setSex(Sex.values()[RandomUtils.nextInt(0, Sex.values().length - 1)]);
 			userDto.setZipCode(randomUsedZipCode);
 
 			UserService.createUser(userDto);
@@ -73,7 +72,7 @@ public class TC_ZipCode {
 		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
 
 		zipCodes.forEach(zipCode -> softAssert.assertTrue(availableZipCodes.second().contains(zipCode),
-				"Zip Code '" + zipCode + "' are NOT added to available zip codes of application."));
+				String.format("Zip Code '%s' are NOT added to available zip codes of application.", zipCode)));
 
 		softAssert.assertAll();
 	}
