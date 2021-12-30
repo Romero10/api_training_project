@@ -106,16 +106,17 @@ public class TC_UserDelete {
 		UserService.createUser(userDto);
 		userDtoList.add(userDto);
 
-		userDto.setSex(Sex.FEMALE);
+		UserDto deleteUser= new UserDto();
+		deleteUser.setName(userDto.getName());
+		deleteUser.setAge(userDto.getAge());
 
-		int statusCode = UserService.deleteUser(userDto);
+		int statusCode = UserService.deleteUser(deleteUser);
 		softAssert.assertEquals(statusCode, HttpStatus.SC_CONFLICT,
 				"Response code is NOT 409 when removing a user (any required field is missed).");
 
 		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(),
 				1, "User is deleted when removing a user (any required field is missed).");
 
-		userDto.setSex(Sex.MALE);
 		softAssert.assertAll();
 	}
 
