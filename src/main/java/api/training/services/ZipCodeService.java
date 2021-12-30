@@ -37,14 +37,15 @@ public class ZipCodeService extends BaseService {
 
 	public static int addZipCodes(List<String> zipCodes) {
 		Header headerToken = getTokenHeader(SCOPE_WRITE);
-		HttpUriRequest request = RequestBuilder.post()
+		RequestBuilder request = RequestBuilder.post()
 				.setUri(EndPoints.ZIP_CODE_EXPAND)
 				.addHeader(headerToken)
-				.addHeader(HttpHeaders.CONTENT_TYPE, CONTENT_JSON)
-				.setEntity(new StringEntity(zipCodes.toString(), ContentType.APPLICATION_JSON))
-				.build();
-		CloseableHttpResponse response = client.request(request);
-		closeResponse();
-		return response.getStatusLine().getStatusCode();
+				.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType())
+				.setEntity(new StringEntity(zipCodes.toString(), ContentType.APPLICATION_JSON));
+		return getResponseStatusCode(request);
+	}
+
+	public static boolean isZipCodeExist() {
+		return !ZipCodeService.getAvailableZipCodes().second().isEmpty();
 	}
 }
