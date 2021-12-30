@@ -13,6 +13,7 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<testng.version>7.4.0</testng.version>
 		<http.client.version>4.5.5</http.client.version>
+		<http.mime.version>4.3.1</http.mime.version>
 		<jackson.version>2.13.0</jackson.version>
 		<lombok.version>1.18.22</lombok.version>
 		<commons.lang.version>3.9</commons.lang.version>
@@ -29,6 +30,11 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>${http.client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>${http.mime.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
