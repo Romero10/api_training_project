@@ -17,7 +17,7 @@ import org.apache.http.message.BasicHeader;
 public class BaseService {
 
 	protected static Client client;
-	protected static ObjectMapper mapper;
+	protected static final ObjectMapper mapper;
 	protected static final Config config = Config.getConfig();
 	protected static final String SCOPE_READ = "read";
 	protected static final String SCOPE_WRITE = "write";

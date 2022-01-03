@@ -33,6 +33,13 @@ public class Exceptions {
 		}
 	}
 
+	//Models
+	public static class JsonParseModelToStringException extends RuntimeException {
+		public JsonParseModelToStringException(Exception e) {
+			super("DTO model cannot be parsed to json string.", e);
+		}
+	}
+
 	//User service
 	public static class JsonFileParseToUserModelException extends RuntimeException {
 		public JsonFileParseToUserModelException(Exception e) {

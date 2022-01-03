@@ -46,7 +46,7 @@ public class TC_UserDelete {
 		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
 		userDto.setAge(RandomUtils.nextInt(1, 99));
-		userDto.setSex(Sex.values()[RandomUtils.nextInt(0, Sex.values().length)]);
+		userDto.setSex(Sex.getRandom());
 		userDto.setZipCode(zipCode);
 
 		UserService.createUser(userDto);
@@ -73,7 +73,7 @@ public class TC_UserDelete {
 		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
 		userDto.setAge(RandomUtils.nextInt(1, 99));
-		userDto.setSex(Sex.values()[RandomUtils.nextInt(0, Sex.values().length)]);
+		userDto.setSex(Sex.getRandom());
 		userDto.setZipCode(zipCode);
 
 		UserService.createUser(userDto);
@@ -106,7 +106,7 @@ public class TC_UserDelete {
 		UserService.createUser(userDto);
 		userDtoList.add(userDto);
 
-		UserDto deleteUser= new UserDto();
+		UserDto deleteUser = new UserDto();
 		deleteUser.setName(userDto.getName());
 		deleteUser.setAge(userDto.getAge());
 

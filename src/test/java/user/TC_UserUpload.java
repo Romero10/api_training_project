@@ -38,7 +38,7 @@ public class TC_UserUpload {
 			UserDto userDto = new UserDto();
 			userDto.setName(uniqueName);
 			userDto.setAge(RandomUtils.nextInt(1, 99));
-			userDto.setSex(Sex.values()[RandomUtils.nextInt(0, Sex.values().length - 1)]);
+			userDto.setSex(Sex.getRandom());
 			userDto.setZipCode(zipCode);
 			UserService.createUser(userDto);
 			userDtoList.add(userDto);

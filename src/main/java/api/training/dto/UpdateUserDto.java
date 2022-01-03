@@ -5,16 +5,12 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class UpdateUserDto {
+public class UpdateUserDto implements IModel {
 
 	private UserDto userNewValues;
 	private UserDto userToChange;
 
 	public String toString() {
-		return "{\"userNewValues\":"
-				+ userNewValues.toString()
-				+ ",\"userToChange\":"
-				+ userToChange.toString()
-				+ "}";
+		return getJsonString(UpdateUserDto.class);
 	}
 }

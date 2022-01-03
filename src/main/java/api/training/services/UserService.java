@@ -8,11 +8,13 @@ import api.training.services.end_points.EndPoints;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.testng.internal.collections.Pair;
 
 import java.io.File;
@@ -27,19 +29,20 @@ public class UserService extends BaseService {
 	}
 
 	public static Pair<Integer, List<UserDto>> getUsers() {
-		RequestBuilder request = getUserRequest(SCOPE_READ, HttpGet.METHOD_NAME);
-		return getUserResponse(request);
+		return getUsersByParams();
 	}
 
 	public static Pair<Integer, List<UserDto>> getUsers(AgeParameter ageParameter, int age) {
-		RequestBuilder request = getUserRequest(SCOPE_READ, HttpGet.METHOD_NAME);
-		request.addParameter(ageParameter.getParameter(), String.valueOf(age));
-		return getUserResponse(request);
+		return getUsersByParams(new BasicNameValuePair(ageParameter.getParameter(), String.valueOf(age)));
 	}
 
 	public static Pair<Integer, List<UserDto>> getUsers(Sex sex) {
+		return getUsersByParams(new BasicNameValuePair("sex", sex.getSexName()));
+	}
+
+	private static Pair<Integer, List<UserDto>> getUsersByParams(NameValuePair... nameValuePairs) {
 		RequestBuilder request = getUserRequest(SCOPE_READ, HttpGet.METHOD_NAME);
-		request.addParameter("sex", sex.getSexName());
+		request.addParameters(nameValuePairs);
 		return getUserResponse(request);
 	}
 
@@ -121,13 +124,11 @@ public class UserService extends BaseService {
 	}
 
 	public static List<UserDto> getUsersFromFile(String fileName) {
-		List<UserDto> userDto;
 		try {
 			File file = new File(System.getProperty("user.dir") + "/testData/" + fileName);
-			userDto = Arrays.stream(mapper.readValue(file, UserDto[].class)).collect(Collectors.toList());
+			return Arrays.stream(mapper.readValue(file, UserDto[].class)).collect(Collectors.toList());
 		} catch (IOException e) {
 			throw new Exceptions.JsonFileParseToUserModelException(e);
 		}
-		return userDto;
 	}
 }

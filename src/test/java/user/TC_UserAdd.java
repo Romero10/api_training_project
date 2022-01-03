@@ -25,6 +25,8 @@ public class TC_UserAdd {
 	private SoftAssert softAssert;
 	private UserDto userDto;
 
+	private String uniqueName;
+
 	private List<UserDto> userDtoList;
 
 	@BeforeClass
@@ -36,8 +38,9 @@ public class TC_UserAdd {
 	public void createZipCode() {
 		softAssert = new SoftAssert();
 		userDto = new UserDto();
+		uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 
-		if (!ZipCodeService.isZipCodeExist()) {
+		if (!ZipCodeService.isAnyZipCodeAvailable()) {
 			String zipCode = RandomUtils.nextInt(10000, 99999) + "7";
 			ZipCodeService.addZipCodes(Lists.newArrayList(zipCode));
 		}
@@ -48,10 +51,9 @@ public class TC_UserAdd {
 		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
 		String randomZipCode = availableZipCodes.second().get(RandomUtils.nextInt(0, availableZipCodes.second().size() - 1));
 
-		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
 		userDto.setAge(RandomUtils.nextInt(1, 99));
-		userDto.setSex(Sex.values()[RandomUtils.nextInt(0, Sex.values().length)]);
+		userDto.setSex(Sex.getRandom());
 		userDto.setZipCode(randomZipCode);
 
 		int statusCode = UserService.createUser(userDto);
@@ -72,9 +74,8 @@ public class TC_UserAdd {
 
 	@Test
 	public void verifyAddUserWithRequiredFieldsTest() {
-		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
-		userDto.setSex(Sex.values()[RandomUtils.nextInt(0, Sex.values().length)]);
+		userDto.setSex(Sex.getRandom());
 
 		int statusCode = UserService.createUser(userDto);
 		softAssert.assertEquals(statusCode, HttpStatus.SC_CREATED,
@@ -89,10 +90,9 @@ public class TC_UserAdd {
 
 	@Test
 	public void verifyAddUserWithIncorrectZipCodeTest() {
-		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
 		userDto.setAge(RandomUtils.nextInt(1, 99));
-		userDto.setSex(Sex.values()[RandomUtils.nextInt(0, Sex.values().length)]);
+		userDto.setSex(Sex.getRandom());
 		userDto.setZipCode(RandomStringUtils.randomAlphabetic(6));
 
 		int statusCode = UserService.createUser(userDto);
@@ -107,9 +107,8 @@ public class TC_UserAdd {
 
 	@Test
 	public void verifyAddNotUniqueUserTest() {
-		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
-		userDto.setSex(Sex.values()[RandomUtils.nextInt(0, Sex.values().length)]);
+		userDto.setSex(Sex.getRandom());
 
 		UserService.createUser(userDto);
 		int statusCode = UserService.createUser(userDto);

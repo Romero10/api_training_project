@@ -37,7 +37,7 @@ public class TC_UserFilter {
 			UserDto userDto = new UserDto();
 			userDto.setName(RandomStringUtils.randomAlphabetic(6));
 			userDto.setAge(RandomUtils.nextInt(1, 99));
-			userDto.setSex(Sex.values()[RandomUtils.nextInt(0, Sex.values().length)]);
+			userDto.setSex(Sex.getRandom());
 			userDto.setZipCode(zipCodes.get(i));
 			UserService.createUser(userDto);
 			userDtoList.add(userDto);
@@ -87,7 +87,7 @@ public class TC_UserFilter {
 
 	@Test
 	public void verifyGetAllUsersBySexTest() {
-		Sex parameterValue = Sex.values()[RandomUtils.nextInt(0, Sex.values().length)];
+		Sex parameterValue = Sex.getRandom();
 		Pair<Integer, List<UserDto>> filteredUsers = UserService.getUsers(parameterValue);
 
 		softAssert.assertEquals(filteredUsers.first().intValue(), HttpStatus.SC_OK,

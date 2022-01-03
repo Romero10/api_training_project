@@ -1,8 +1,9 @@
 package api.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.apache.commons.lang3.RandomUtils;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@JsonFormat(shape = JsonFormat.Shape.STRING)
 public enum Sex {
 
 	FEMALE("FEMALE"),
@@ -16,5 +17,9 @@ public enum Sex {
 
 	public String getSexName() {
 		return sexName;
+	}
+
+	public static Sex getRandom() {
+		return Sex.values()[RandomUtils.nextInt(0, Sex.values().length)];
 	}
 }

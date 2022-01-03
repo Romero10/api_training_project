@@ -45,24 +45,20 @@ public class Client {
 	}
 
 	public String parseResponse(CloseableHttpResponse httpResponse) {
-		String responseHttp;
 		try {
 			HttpEntity entity = httpResponse.getEntity();
-			responseHttp = EntityUtils.toString(entity);
+			return EntityUtils.toString(entity);
 		} catch (Exception e) {
 			throw new Exceptions.ResponseParseToStringException(e);
 		}
-		return responseHttp;
 	}
 
 	public <T> T parseResponseTo(Class<T> aClass, CloseableHttpResponse httpResponse) {
-		T obj;
 		try {
 			String jsonString = EntityUtils.toString(httpResponse.getEntity());
-			obj = mapper.reader().forType(aClass).readValue(jsonString);
+			return mapper.reader().forType(aClass).readValue(jsonString);
 		} catch (Exception e) {
 			throw new Exceptions.ResponseMappingToModelException(e);
 		}
-		return obj;
 	}
 }
