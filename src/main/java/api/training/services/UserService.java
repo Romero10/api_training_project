@@ -49,19 +49,19 @@ public class UserService extends BaseService {
 	public static int createUser(UserDto userDto) {
 		RequestBuilder request = getUserRequest(SCOPE_WRITE, HttpPost.METHOD_NAME);
 		request.setEntity(new StringEntity(userDto.toString(), ContentType.APPLICATION_JSON));
-		return getResponseStatusCode(request);
+		return request(request.build());
 	}
 
 	public static int deleteUser(UserDto userDto) {
 		RequestBuilder request = getUserRequest(SCOPE_WRITE, HttpDelete.METHOD_NAME);
 		request.setEntity(new StringEntity(userDto.toString(), ContentType.APPLICATION_JSON));
-		return getResponseStatusCode(request);
+		return request(request.build());
 	}
 
 	public static int updateUser(UpdateUserDto updateUserDto) {
 		RequestBuilder request = getUserRequest(SCOPE_WRITE, HttpPut.METHOD_NAME);
 		request.setEntity(new StringEntity(updateUserDto.toString(), ContentType.APPLICATION_JSON));
-		return getResponseStatusCode(request);
+		return request(request.build());
 	}
 
 	public static Pair<Integer, String> uploadUsersFrom(String fileName) {
@@ -79,11 +79,7 @@ public class UserService extends BaseService {
 				.setEntity(httpEntity)
 				.build();
 
-		CloseableHttpResponse response = client.request(request);
-		int statusCode = response.getStatusLine().getStatusCode();
-		String responseString = client.parseResponse(response);
-		closeResponse();
-		return Pair.of(statusCode, responseString);
+		return requestToString(request);
 	}
 
 	private static RequestBuilder getUserRequest(String scope, String method) {
@@ -95,12 +91,8 @@ public class UserService extends BaseService {
 	}
 
 	private static Pair<Integer, List<UserDto>> getUserResponse(RequestBuilder request) {
-		CloseableHttpResponse response = client.request(request.build());
-		int statusCode = response.getStatusLine().getStatusCode();
-		List<UserDto> listOfZipCodes = Arrays.stream(client.parseResponseTo(UserDto[].class, response))
-				.collect(Collectors.toList());
-		closeResponse();
-		return Pair.of(statusCode, listOfZipCodes);
+		Pair<Integer, UserDto[]> pair = requestToModel(UserDto[].class, request.build());
+		return Pair.of(pair.first(), Arrays.stream(pair.second()).collect(Collectors.toList()));
 	}
 
 	public enum AgeParameter {

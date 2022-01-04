@@ -1,64 +1,49 @@
 package api.training.client;
 
-import api.training.exceptions.Exceptions;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpEntity;
+import api.training.config.Config;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
 
 public class Client {
 
-	private final CloseableHttpClient httpClient;
-	private final ObjectMapper mapper;
-	private CloseableHttpResponse response;
+	private static volatile Client instance;
+	private static final ThreadLocal<CloseableHttpClient> client = new ThreadLocal<>();
 
-	public Client(CredentialsProvider provider) {
-		httpClient = HttpClientBuilder.create()
+	public static Client getInstance() {
+		Client localInstance = instance;
+		if (localInstance == null) {
+			synchronized (Client.class) {
+				localInstance = instance;
+				if (localInstance == null) {
+					instance = localInstance = new Client();
+				}
+			}
+		}
+		return instance;
+	}
+
+	public boolean isClientNull() {
+		return client.get() == null;
+	}
+
+	public CloseableHttpClient getClient() {
+		if (isClientNull()) {
+			client.set(getConfiguredClient());
+		}
+		return client.get();
+	}
+
+	private CloseableHttpClient getConfiguredClient() {
+		CredentialsProvider provider = new BasicCredentialsProvider();
+		UsernamePasswordCredentials credentials
+				= new UsernamePasswordCredentials(Config.getConfig().getUserName(), Config.getConfig().getUserPassword());
+		provider.setCredentials(AuthScope.ANY, credentials);
+		return HttpClientBuilder.create()
 				.setDefaultCredentialsProvider(provider)
 				.build();
-		mapper = new ObjectMapper();
-	}
-
-	public CloseableHttpResponse request(HttpUriRequest request) {
-		try {
-			response = httpClient.execute(request);
-		} catch (IOException e) {
-			throw new Exceptions.RequestException(request.getMethod(), e);
-		}
-		return response;
-	}
-
-	public void closeResponse() {
-		try {
-			if (response != null) {
-				response.close();
-			}
-		} catch (IOException e) {
-			throw new Exceptions.CloseResponseException(e);
-		}
-	}
-
-	public String parseResponse(CloseableHttpResponse httpResponse) {
-		try {
-			HttpEntity entity = httpResponse.getEntity();
-			return EntityUtils.toString(entity);
-		} catch (Exception e) {
-			throw new Exceptions.ResponseParseToStringException(e);
-		}
-	}
-
-	public <T> T parseResponseTo(Class<T> aClass, CloseableHttpResponse httpResponse) {
-		try {
-			String jsonString = EntityUtils.toString(httpResponse.getEntity());
-			return mapper.reader().forType(aClass).readValue(jsonString);
-		} catch (Exception e) {
-			throw new Exceptions.ResponseMappingToModelException(e);
-		}
 	}
 }
