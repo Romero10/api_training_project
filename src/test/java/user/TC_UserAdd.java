@@ -123,6 +123,26 @@ public class TC_UserAdd {
 		softAssert.assertAll();
 	}
 
+	@Test
+	public void verifyAddUserWithoutRequiredFieldsTest() {
+		String addZipCode = ZipCodeService.getAvailableZipCodes().second().get(0);
+		userDto.setAge(RandomUtils.nextInt(1, 99));
+		userDto.setZipCode(addZipCode);
+
+		int statusCode = UserService.createUser(userDto);
+		softAssert.assertEquals(statusCode, HttpStatus.SC_CONFLICT,
+				"Response code is NOT 409 when creating a new user without required fields.");
+
+		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(),
+				0, "User without required fields is added to application.");
+
+		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
+		softAssert.assertEquals(availableZipCodes.second().stream().filter(zipCode -> zipCode.equals(addZipCode)).count(),
+				1, "Zip code is removed from available zip codes of application when creating a user without required fields.");
+
+		softAssert.assertAll();
+	}
+
 	@AfterClass
 	public void removeUsers() {
 		for (UserDto userDto : userDtoList) {
