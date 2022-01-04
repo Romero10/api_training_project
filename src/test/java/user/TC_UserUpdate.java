@@ -9,11 +9,10 @@ import com.beust.jcommander.internal.Lists;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPut;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 import org.testng.internal.collections.Pair;
 
@@ -28,6 +27,14 @@ public class TC_UserUpdate {
 	private UserDto userDto;
 
 	private List<UserDto> userDtoList;
+
+	@DataProvider(name = "updateRequest")
+	public Object[][] updateRequest() {
+		return new Object[][]{
+				{HttpPut.METHOD_NAME},
+				{HttpPatch.METHOD_NAME}
+		};
+	}
 
 	@BeforeClass
 	public void initUserListForRemoving() {
@@ -51,8 +58,8 @@ public class TC_UserUpdate {
 		UserService.createUser(userDto);
 	}
 
-	@Test
-	public void verifyUpdateUserTest() {
+	@Test(dataProvider = "updateRequest")
+	public void verifyUpdateUserTest(String methodName) {
 		UserDto userUpdateDto = new UserDto();
 		int newAge = RandomUtils.nextInt(1, 99);
 		userUpdateDto.setName(userDto.getName());
@@ -64,7 +71,7 @@ public class TC_UserUpdate {
 		updateUser.setUserToChange(userDto);
 		updateUser.setUserNewValues(userUpdateDto);
 
-		int statusCode = UserService.updateUser(updateUser);
+		int statusCode = UserService.updateUser(updateUser, methodName);
 		userDtoList.add(userUpdateDto);
 		softAssert.assertEquals(statusCode, HttpStatus.SC_OK,
 				"Response code is NOT 200 when updating a user.");
@@ -74,8 +81,8 @@ public class TC_UserUpdate {
 		softAssert.assertAll();
 	}
 
-	@Test
-	public void verifyUpdateUserWithIncorrectZipCodeTest() {
+	@Test(dataProvider = "updateRequest")
+	public void verifyUpdateUserWithIncorrectZipCodeTest(String methodName) {
 		UserDto userUpdateDto = new UserDto();
 		int newAge = RandomUtils.nextInt(1, 99);
 		String incorrectZipCode = RandomUtils.nextInt(10000, 99999) + "61";
@@ -88,7 +95,7 @@ public class TC_UserUpdate {
 		updateUser.setUserToChange(userDto);
 		updateUser.setUserNewValues(userUpdateDto);
 
-		int statusCode = UserService.updateUser(updateUser);
+		int statusCode = UserService.updateUser(updateUser, methodName);
 		userDtoList.add(userUpdateDto);
 		softAssert.assertEquals(statusCode, HttpStatus.SC_FAILED_DEPENDENCY,
 				"Response code is NOT 424 when updating a user with incorrect zip code.");
@@ -109,8 +116,8 @@ public class TC_UserUpdate {
 		Assert.assertEquals(actualAge, newAge, "User is updated when updating a user with incorrect zip code.");
 	}
 
-	@Test
-	public void verifyUpdateUserWithRequiredFieldsMissedTest() {
+	@Test(dataProvider = "updateRequest")
+	public void verifyUpdateUserWithRequiredFieldsMissedTest(String methodName) {
 		UserDto userUpdateDto = new UserDto();
 		int newAge = RandomUtils.nextInt(1, 99);
 		userUpdateDto.setName(userDto.getName());
@@ -121,7 +128,7 @@ public class TC_UserUpdate {
 		updateUser.setUserToChange(userDto);
 		updateUser.setUserNewValues(userUpdateDto);
 
-		int statusCode = UserService.updateUser(updateUser);
+		int statusCode = UserService.updateUser(updateUser, methodName);
 		userDtoList.add(userUpdateDto);
 		softAssert.assertEquals(statusCode, HttpStatus.SC_CONFLICT,
 				"Response code is NOT 409 when updating a user with required fields are missed.");
@@ -132,8 +139,8 @@ public class TC_UserUpdate {
 		softAssert.assertAll();
 	}
 
-	@Test
-	public void verifyInitialUserWithoutRequiredFieldsTest() {
+	@Test(dataProvider = "updateRequest")
+	public void verifyInitialUserWithoutRequiredFieldsTest(String methodName) {
 		UserDto initialUser = new UserDto();
 		initialUser.setAge(userDto.getAge());
 		initialUser.setZipCode(userDto.getZipCode());
@@ -149,7 +156,7 @@ public class TC_UserUpdate {
 		updateUser.setUserToChange(initialUser);
 		updateUser.setUserNewValues(userUpdateDto);
 
-		int statusCode = UserService.updateUser(updateUser);
+		int statusCode = UserService.updateUser(updateUser, methodName);
 		userDtoList.add(userUpdateDto);
 		softAssert.assertEquals(statusCode, HttpStatus.SC_BAD_REQUEST,
 				"Response code is NOT 400 when updating a user to change without required fields.");

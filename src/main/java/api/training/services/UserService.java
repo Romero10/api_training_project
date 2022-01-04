@@ -59,7 +59,11 @@ public class UserService extends BaseService {
 	}
 
 	public static int updateUser(UpdateUserDto updateUserDto) {
-		RequestBuilder request = getUserRequest(SCOPE_WRITE, HttpPut.METHOD_NAME);
+		return updateUser(updateUserDto, HttpPut.METHOD_NAME);
+	}
+
+	public static int updateUser(UpdateUserDto updateUserDto, String methodName) {
+		RequestBuilder request = getUserRequest(SCOPE_WRITE, methodName);
 		request.setEntity(new StringEntity(updateUserDto.toString(), ContentType.APPLICATION_JSON));
 		return request(request.build());
 	}
