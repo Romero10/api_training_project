@@ -22,6 +22,8 @@ public class TC_UserDelete {
 
 	private final static String NAME = "Anton";
 
+	private String zipCode;
+
 	private SoftAssert softAssert;
 	private UserDto userDto;
 
@@ -36,13 +38,13 @@ public class TC_UserDelete {
 	public void initSoftAssert() {
 		softAssert = new SoftAssert();
 		userDto = new UserDto();
+
+		zipCode = RandomUtils.nextInt(10000, 99999) + "4";
+		ZipCodeService.addZipCodes(Lists.newArrayList(zipCode));
 	}
 
 	@Test
 	public void verifyRemoveUserTest() {
-		String zipCode = RandomUtils.nextInt(10000, 99999) + "4";
-		ZipCodeService.addZipCodes(Lists.newArrayList(zipCode));
-
 		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
 		userDto.setAge(RandomUtils.nextInt(1, 99));
@@ -67,20 +69,17 @@ public class TC_UserDelete {
 
 	@Test
 	public void verifyRemoveUserWithRequiredFieldsTest() {
-		String zipCode = RandomUtils.nextInt(10000, 99999) + "4";
-		ZipCodeService.addZipCodes(Lists.newArrayList(zipCode));
-
 		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
 		userDto.setAge(RandomUtils.nextInt(1, 99));
 		userDto.setSex(Sex.getRandom());
 		userDto.setZipCode(zipCode);
 
-		UserService.createUser(userDto);
-
 		UserDto deleteUser = new UserDto();
 		deleteUser.setName(userDto.getName());
 		deleteUser.setSex(userDto.getSex());
+
+		UserService.createUser(userDto);
 
 		int statusCode = UserService.deleteUser(deleteUser);
 		softAssert.assertEquals(statusCode, HttpStatus.SC_NO_CONTENT,
@@ -102,13 +101,14 @@ public class TC_UserDelete {
 		userDto.setName(uniqueName);
 		userDto.setAge(RandomUtils.nextInt(1, 99));
 		userDto.setSex(Sex.MALE);
-
-		UserService.createUser(userDto);
-		userDtoList.add(userDto);
+		userDto.setZipCode(zipCode);
 
 		UserDto deleteUser = new UserDto();
 		deleteUser.setName(userDto.getName());
 		deleteUser.setAge(userDto.getAge());
+
+		UserService.createUser(userDto);
+		userDtoList.add(userDto);
 
 		int statusCode = UserService.deleteUser(deleteUser);
 		softAssert.assertEquals(statusCode, HttpStatus.SC_CONFLICT,
@@ -116,6 +116,10 @@ public class TC_UserDelete {
 
 		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(),
 				1, "User is deleted when removing a user (any required field is missed).");
+
+		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
+		softAssert.assertFalse(availableZipCodes.second().contains(zipCode),
+				"Zip code is returned in list of available zip codes when removing a user (any required field is missed).");
 
 		softAssert.assertAll();
 	}
