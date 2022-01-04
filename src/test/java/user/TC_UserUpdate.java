@@ -15,6 +15,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
+import org.testng.internal.collections.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,12 +93,19 @@ public class TC_UserUpdate {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_FAILED_DEPENDENCY,
 				"Response code is NOT 424 when updating a user with incorrect zip code.");
 
-		List<UserDto> users = UserService.findUsersByName(userUpdateDto.getName());
-		softAssert.assertFalse(users.isEmpty(), "Updated user does not exist in users.");
+		List<UserDto> updatedUser = UserService.findUsersByName(userUpdateDto.getName());
+		softAssert.assertFalse(updatedUser.isEmpty(), "Updated user exists in users when updating a user with incorrect zip code.");
+
+		List<UserDto> users = UserService.findUsersByName(userDto.getName());
+		softAssert.assertEquals(users.size(), 1, "Initial user was deleted from application when updating a user with incorrect zip code.");
+
+		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
+		softAssert.assertEquals(availableZipCodes.second().stream().filter(zipCode -> zipCode.equals(userDto.getZipCode())).count(),
+				0, "Zip code is in the available list for initial user.");
 
 		softAssert.assertAll();
 
-		int actualAge = users.get(0).getAge();
+		int actualAge = updatedUser.get(0).getAge();
 		Assert.assertEquals(actualAge, newAge, "User is updated when updating a user with incorrect zip code.");
 	}
 
@@ -120,6 +128,35 @@ public class TC_UserUpdate {
 
 		softAssert.assertEquals(UserService.findUsersByName(userDto.getName()).size(), 0,
 				"User is updated when updating a user with required fields are missed.");
+
+		softAssert.assertAll();
+	}
+
+	@Test
+	public void verifyInitialUserWithoutRequiredFieldsTest() {
+		UserDto initialUser = new UserDto();
+		initialUser.setAge(userDto.getAge());
+		initialUser.setZipCode(userDto.getZipCode());
+
+		UserDto userUpdateDto = new UserDto();
+		int newAge = RandomUtils.nextInt(1, 99);
+		userUpdateDto.setName(userDto.getName());
+		userUpdateDto.setSex(userDto.getSex());
+		userUpdateDto.setAge(newAge);
+		userUpdateDto.setZipCode(userDto.getZipCode());
+
+		UpdateUserDto updateUser = new UpdateUserDto();
+		updateUser.setUserToChange(initialUser);
+		updateUser.setUserNewValues(userUpdateDto);
+
+		int statusCode = UserService.updateUser(updateUser);
+		userDtoList.add(userUpdateDto);
+		softAssert.assertEquals(statusCode, HttpStatus.SC_BAD_REQUEST,
+				"Response code is NOT 400 when updating a user to change without required fields.");
+
+		int actualAge = UserService.findUsersByName(userDto.getName()).get(0).getAge();
+		softAssert.assertNotEquals(actualAge, newAge,
+				"User is updated when updating a user to change without required fields.");
 
 		softAssert.assertAll();
 	}
