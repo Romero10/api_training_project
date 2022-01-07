@@ -85,7 +85,7 @@ public class TC_UserDelete {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_NO_CONTENT,
 				"Response code is NOT 204 when removing a user with required fields.");
 
-		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(), 0,
+		softAssert.assertEquals(UserService.findUsersBy(uniqueName).size(), 0,
 				"User with required fields is NOT deleted.");
 
 		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
@@ -114,7 +114,7 @@ public class TC_UserDelete {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_CONFLICT,
 				"Response code is NOT 409 when removing a user (any required field is missed).");
 
-		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(),
+		softAssert.assertEquals(UserService.findUsersBy(uniqueName).size(),
 				1, "User is deleted when removing a user (any required field is missed).");
 
 		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();

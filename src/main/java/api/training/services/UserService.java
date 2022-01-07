@@ -114,8 +114,14 @@ public class UserService extends BaseService {
 		}
 	}
 
-	public static List<UserDto> findUsersByName(String name) {
-		List<UserDto> users = UserService.getUsers().second();
+	public static List<UserDto> findUsersBy(String name, Sex sex) {
+		List<UserDto> users = getUsers().second();
+		return users.stream().filter(user -> user.getName().equals(name) && user.getSex().equals(sex))
+				.collect(Collectors.toList());
+	}
+
+	public static List<UserDto> findUsersBy(String name) {
+		List<UserDto> users = getUsers().second();
 		return users.stream().filter(user -> user.getName().equals(name)).collect(Collectors.toList());
 	}
 

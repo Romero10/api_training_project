@@ -41,6 +41,6 @@ public class ZipCodeService extends BaseService {
 	}
 
 	public static boolean isAnyZipCodeAvailable() {
-		return !ZipCodeService.getAvailableZipCodes().second().isEmpty();
+		return !getAvailableZipCodes().second().isEmpty();
 	}
 }

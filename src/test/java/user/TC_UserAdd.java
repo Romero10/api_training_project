@@ -61,7 +61,7 @@ public class TC_UserAdd {
 				"Response code is NOT 201 when creating a new user.");
 		userDtoList.add(userDto);
 
-		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(),
+		softAssert.assertEquals(UserService.findUsersBy(uniqueName).size(),
 				1, "User is NOT added to application.");
 
 		availableZipCodes = ZipCodeService.getAvailableZipCodes();
@@ -82,7 +82,7 @@ public class TC_UserAdd {
 				"Response code is NOT 201 when creating a new user with required fields.");
 		userDtoList.add(userDto);
 
-		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(),
+		softAssert.assertEquals(UserService.findUsersBy(uniqueName).size(),
 				1, "User with required fields is NOT added to application.");
 
 		softAssert.assertAll();
@@ -99,7 +99,7 @@ public class TC_UserAdd {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_FAILED_DEPENDENCY,
 				"Response code is NOT 424 when creating a new user with incorrect zip code.");
 
-		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(),
+		softAssert.assertEquals(UserService.findUsersBy(uniqueName).size(),
 				0, "User with incorrect zip code is added to application.");
 
 		softAssert.assertAll();
@@ -117,7 +117,7 @@ public class TC_UserAdd {
 						"with the same name and sex as existing user in the system.");
 		userDtoList.add(userDto);
 
-		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(),
+		softAssert.assertEquals(UserService.findUsersBy(uniqueName).size(),
 				1, "User with the same name and sex as existing user in the system is added to application.");
 
 		softAssert.assertAll();
@@ -133,7 +133,7 @@ public class TC_UserAdd {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_CONFLICT,
 				"Response code is NOT 409 when creating a new user without required fields.");
 
-		softAssert.assertEquals(UserService.findUsersByName(uniqueName).size(),
+		softAssert.assertEquals(UserService.findUsersBy(uniqueName).size(),
 				0, "User without required fields is added to application.");
 
 		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();

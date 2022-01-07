@@ -76,7 +76,10 @@ public class TC_UserUpdate {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_OK,
 				"Response code is NOT 200 when updating a user.");
 
-		int actualAge = UserService.findUsersByName(userUpdateDto.getName()).get(0).getAge();
+		List<UserDto> userDtoList = UserService.getUsers().second();
+		softAssert.assertFalse(userDtoList.contains(userDto), "Actual list of users have old user.");
+
+		int actualAge = UserService.findUsersBy(userUpdateDto.getName(), userUpdateDto.getSex()).get(0).getAge();
 		softAssert.assertEquals(actualAge, newAge, "User is NOT updated.");
 		softAssert.assertAll();
 	}
@@ -100,10 +103,10 @@ public class TC_UserUpdate {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_FAILED_DEPENDENCY,
 				"Response code is NOT 424 when updating a user with incorrect zip code.");
 
-		List<UserDto> updatedUser = UserService.findUsersByName(userUpdateDto.getName());
+		List<UserDto> updatedUser = UserService.findUsersBy(userUpdateDto.getName());
 		softAssert.assertFalse(updatedUser.isEmpty(), "Updated user exists in users when updating a user with incorrect zip code.");
 
-		List<UserDto> users = UserService.findUsersByName(userDto.getName());
+		List<UserDto> users = UserService.findUsersBy(userDto.getName());
 		softAssert.assertEquals(users.size(), 1, "Initial user was deleted from application when updating a user with incorrect zip code.");
 
 		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
@@ -133,7 +136,7 @@ public class TC_UserUpdate {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_CONFLICT,
 				"Response code is NOT 409 when updating a user with required fields are missed.");
 
-		softAssert.assertEquals(UserService.findUsersByName(userDto.getName()).size(), 0,
+		softAssert.assertEquals(UserService.findUsersBy(userDto.getName()).size(), 0,
 				"User is updated when updating a user with required fields are missed.");
 
 		softAssert.assertAll();
@@ -161,7 +164,7 @@ public class TC_UserUpdate {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_BAD_REQUEST,
 				"Response code is NOT 400 when updating a user to change without required fields.");
 
-		int actualAge = UserService.findUsersByName(userDto.getName()).get(0).getAge();
+		int actualAge = UserService.findUsersBy(userDto.getName()).get(0).getAge();
 		softAssert.assertNotEquals(actualAge, newAge,
 				"User is updated when updating a user to change without required fields.");
 

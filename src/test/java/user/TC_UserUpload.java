@@ -90,6 +90,21 @@ public class TC_UserUpload {
 		softAssert.assertAll();
 	}
 
+	@Test
+	public void verifyUserUploadWithInvalidFileTest() {
+		String jsonFileName = "incorrectUsersFile.json";
+		Pair<Integer, List<UserDto>> usersBefore = UserService.getUsers();
+		Pair<Integer, String> usersUpload = UserService.uploadUsersFrom(jsonFileName);
+		softAssert.assertEquals(usersUpload.first().intValue(), HttpStatus.SC_BAD_REQUEST,
+				"Response code is NOT 400 when JSON file is invalid.");
+
+		Pair<Integer, List<UserDto>> usersAfter = UserService.getUsers();
+		softAssert.assertEquals(usersAfter, usersBefore,
+				"All users are replaced with users from file when JSON file is invalid.");
+
+		softAssert.assertAll();
+	}
+
 	@AfterMethod
 	public void removeUsers() {
 		for (UserDto userDto : userDtoList) {
