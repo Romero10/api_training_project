@@ -2,7 +2,6 @@ package api.training.services;
 
 import api.training.dto.TokenDto;
 import api.training.services.end_points.EndPoints;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 
@@ -32,9 +31,7 @@ public class AuthenticationService extends BaseService {
 					.addParameter("grant_type", "client_credentials")
 					.addParameter("scope", scope)
 					.build();
-
-			CloseableHttpResponse response = client.request(request);
-			tokens.put(scope, client.parseResponseTo(TokenDto.class, response));
+			tokens.put(scope, requestToModel(TokenDto.class, request).second());
 		}
 		return tokens.get(scope);
 	}

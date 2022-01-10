@@ -32,4 +32,18 @@ public class Exceptions {
 			super("The response cannot be closed.", e);
 		}
 	}
+
+	//Models
+	public static class JsonParseModelToStringException extends RuntimeException {
+		public JsonParseModelToStringException(Exception e) {
+			super("DTO model cannot be parsed to json string.", e);
+		}
+	}
+
+	//User service
+	public static class JsonFileParseToUserModelException extends RuntimeException {
+		public JsonFileParseToUserModelException(Exception e) {
+			super("JSON file cannot be parsed to user model.", e);
+		}
+	}
 }

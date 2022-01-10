@@ -1,0 +1,14 @@
+{
+  "user1": {
+    "age": 561,
+    "name": "Us",
+    "sex": "MALE",
+    "zipCode": "12345"
+  },
+  "user2": {
+    "age": 56,
+    "name": "Us1",
+    "sex": "MALE",
+    "zipCode": "ABCDE"
+  }
+}
