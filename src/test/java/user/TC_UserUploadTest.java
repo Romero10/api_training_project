@@ -5,6 +5,10 @@ import api.training.dto.UserDto;
 import api.training.services.UserService;
 import api.training.services.ZipCodeService;
 import com.beust.jcommander.internal.Lists;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Issue;
+import io.qameta.allure.TmsLink;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
@@ -17,7 +21,8 @@ import org.testng.internal.collections.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TC_UserUpload {
+@Feature("Users")
+public class TC_UserUploadTest {
 
 	private final static String NAME = "Ivan";
 
@@ -45,7 +50,9 @@ public class TC_UserUpload {
 		}
 	}
 
+	@TmsLink("Task 70 - Scenario #1")
 	@Test
+	@Description("Verify that users can be uploaded from file.")
 	public void verifyUserUploadTest() {
 		String jsonFileName = "users.json";
 		Pair<Integer, String> usersUpload = UserService.uploadUsersFrom(jsonFileName);
@@ -62,7 +69,10 @@ public class TC_UserUpload {
 		softAssert.assertAll();
 	}
 
+	@Issue("IS-44444")
+	@TmsLink("Task 70 - Scenario #2")
 	@Test
+	@Description("Verify that users can NOT be uploaded from file where at least one user has incorrect (unavailable) zip code.")
 	public void verifyUserUploadWithIncorrectZipCodeTest() {
 		String jsonFileName = "usersIncorrectZipCode.json";
 		Pair<Integer, String> usersUpload = UserService.uploadUsersFrom(jsonFileName);
@@ -76,7 +86,10 @@ public class TC_UserUpload {
 		softAssert.assertAll();
 	}
 
+	@Issue("IS-44445")
+	@TmsLink("Task 70 - Scenario #3")
 	@Test
+	@Description("Verify that users can NOT be uploaded from file where at least one user has missed required field.")
 	public void verifyUserUploadWithRequiredFieldsMissedTest() {
 		String jsonFileName = "usersMissedRequiredField.json";
 		Pair<Integer, String> usersUpload = UserService.uploadUsersFrom(jsonFileName);
@@ -90,7 +103,9 @@ public class TC_UserUpload {
 		softAssert.assertAll();
 	}
 
+	@TmsLink("Task 70 - Additional scenario")
 	@Test
+	@Description("Verify that users can NOT be uploaded from file when JSON file is invalid.")
 	public void verifyUserUploadWithInvalidFileTest() {
 		String jsonFileName = "incorrectUsersFile.json";
 		Pair<Integer, List<UserDto>> usersBefore = UserService.getUsers();

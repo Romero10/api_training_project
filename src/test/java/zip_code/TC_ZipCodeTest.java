@@ -5,6 +5,7 @@ import api.training.dto.UserDto;
 import api.training.services.UserService;
 import api.training.services.ZipCodeService;
 import com.beust.jcommander.internal.Lists;
+import io.qameta.allure.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
@@ -18,7 +19,8 @@ import org.testng.internal.collections.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TC_ZipCode {
+@Feature("Zip Codes")
+public class TC_ZipCodeTest {
 
 	private List<String> zipCodes;
 	private String randomUsedZipCode;
@@ -57,7 +59,10 @@ public class TC_ZipCode {
 		softAssert = new SoftAssert();
 	}
 
+	@Issue("IS-12234")
+	@TmsLink("Task 20 - Scenario #1")
 	@Test
+	@Description("Test gets all available zip codes in the application for now.")
 	public void availableZipCodesTest() {
 		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
 		System.out.println(availableZipCodes.second());
@@ -65,7 +70,9 @@ public class TC_ZipCode {
 				"Response code is NOT 200 when getting a list of zip codes.");
 	}
 
+	@TmsLink("Task 20 - Scenario #2")
 	@Test
+	@Description("Verify that zip codes from request body are added to available zip codes of application.")
 	public void verifyAddZipCodesTest() {
 		int responseStatusCode = ZipCodeService.addZipCodes(zipCodes);
 		softAssert.assertEquals(responseStatusCode, HttpStatus.SC_CREATED,
@@ -79,7 +86,11 @@ public class TC_ZipCode {
 		softAssert.assertAll();
 	}
 
+	@Issue("IS-12235")
+	@TmsLink("Task 20 - Scenario #3")
 	@Test
+	@Description("Verify that zip codes from request body are added to available zip code " +
+			"and there are no duplications in available zip code.")
 	public void verifyAddDuplicationsZipCodesTest() {
 		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
 
@@ -99,7 +110,11 @@ public class TC_ZipCode {
 		softAssert.assertAll();
 	}
 
+	@Issue("IS-12236")
+	@TmsLink("Task 20 - Scenario #4")
 	@Test
+	@Description("Verify that zip codes from request body are added to available zip codes " +
+			"and there are no duplications between available zip codes and already used zip codes.")
 	public void verifyAddDuplicationsUsedZipCodesTest() {
 		zipCodes.add(randomUsedZipCode);
 

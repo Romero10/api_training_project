@@ -6,6 +6,9 @@ import api.training.services.UserService;
 import api.training.services.UserService.AgeParameter;
 import api.training.services.ZipCodeService;
 import com.beust.jcommander.internal.Lists;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.TmsLink;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
@@ -20,7 +23,8 @@ import org.testng.internal.collections.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TC_UserFilter {
+@Feature("Users")
+public class TC_UserFilterTest {
 
 	private SoftAssert softAssert;
 
@@ -49,7 +53,9 @@ public class TC_UserFilter {
 		softAssert = new SoftAssert();
 	}
 
+	@TmsLink("Task 40 - Scenario #1")
 	@Test
+	@Description("Test gets all users stored in the application for now.")
 	public void verifyGetAllStoredUsersTest() {
 		Pair<Integer, List<UserDto>> storedUsers = UserService.getUsers();
 		System.out.printf("Users stored in the application: %s%n", storedUsers.second());
@@ -57,7 +63,9 @@ public class TC_UserFilter {
 				"Response code is NOT 200 when getting all users stored in the application for now.");
 	}
 
+	@TmsLink("Task 40 - Scenario #2")
 	@Test
+	@Description("Verify that using 'olderThan' parameter can get all users older than value of parameter.")
 	public void verifyGetAllUsersOlderThanTest() {
 		int parameterValue = RandomUtils.nextInt(1, 99);
 		Pair<Integer, List<UserDto>> filteredUsers = UserService.getUsers(AgeParameter.OLDER_THAN, parameterValue);
@@ -71,7 +79,9 @@ public class TC_UserFilter {
 		softAssert.assertAll();
 	}
 
+	@TmsLink("Task 40 - Scenario #3")
 	@Test
+	@Description("Verify that using 'youngerThan' parameter can get all users younger than value of parameter.")
 	public void verifyGetAllUsersYoungerThanTest() {
 		int parameterValue = RandomUtils.nextInt(1, 99);
 		Pair<Integer, List<UserDto>> filteredUsers = UserService.getUsers(AgeParameter.YOUNGER_THAN, parameterValue);
@@ -85,7 +95,9 @@ public class TC_UserFilter {
 		softAssert.assertAll();
 	}
 
+	@TmsLink("Task 40 - Scenario #4")
 	@Test
+	@Description("Verify that using 'Sex' parameter can get all users with sex value of parameter.")
 	public void verifyGetAllUsersBySexTest() {
 		Sex parameterValue = Sex.getRandom();
 		Pair<Integer, List<UserDto>> filteredUsers = UserService.getUsers(parameterValue);

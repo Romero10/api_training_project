@@ -1,6 +1,7 @@
 package api.training.services;
 
 import api.training.services.end_points.EndPoints;
+import io.qameta.allure.Step;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -19,6 +20,7 @@ public class ZipCodeService extends BaseService {
 
 	}
 
+	@Step("Get all available zip codes in the application")
 	public static Pair<Integer, List<String>> getAvailableZipCodes() {
 		Header headerToken = getTokenHeader(SCOPE_READ);
 
@@ -30,6 +32,7 @@ public class ZipCodeService extends BaseService {
 		return Pair.of(pair.first(), Arrays.stream(pair.second()).collect(Collectors.toList()));
 	}
 
+	@Step("Create a list of zip codes: {zipCodes}")
 	public static int addZipCodes(List<String> zipCodes) {
 		Header headerToken = getTokenHeader(SCOPE_WRITE);
 		RequestBuilder request = RequestBuilder.post()
@@ -40,6 +43,7 @@ public class ZipCodeService extends BaseService {
 		return request(request.build());
 	}
 
+	@Step("Check availability for zip codes")
 	public static boolean isAnyZipCodeAvailable() {
 		return !getAvailableZipCodes().second().isEmpty();
 	}

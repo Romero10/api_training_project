@@ -46,4 +46,11 @@ public class Exceptions {
 			super("JSON file cannot be parsed to user model.", e);
 		}
 	}
+
+	//Allure
+	public static class AllureAddAttachmentException extends RuntimeException {
+		public AllureAddAttachmentException(Exception e) {
+			super("Allure cannot add attachment.", e);
+		}
+	}
 }
