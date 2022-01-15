@@ -5,6 +5,10 @@ import api.training.dto.UserDto;
 import api.training.services.UserService;
 import api.training.services.ZipCodeService;
 import com.beust.jcommander.internal.Lists;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Issue;
+import io.qameta.allure.TmsLink;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
@@ -18,7 +22,8 @@ import org.testng.internal.collections.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TC_UserAdd {
+@Feature("Users")
+public class TC_UserAddTest {
 
 	private final static String NAME = "Anton";
 
@@ -46,7 +51,9 @@ public class TC_UserAdd {
 		}
 	}
 
+	@TmsLink("Task 30 - Scenario #1")
 	@Test
+	@Description("Verify that user can be added and zip code is removed from available zip codes of application.")
 	public void verifyAddUserAndRemoveZipCodeTest() {
 		Pair<Integer, List<String>> availableZipCodes = ZipCodeService.getAvailableZipCodes();
 		String randomZipCode = availableZipCodes.second().get(RandomUtils.nextInt(0, availableZipCodes.second().size() - 1));
@@ -72,7 +79,9 @@ public class TC_UserAdd {
 		softAssert.assertAll();
 	}
 
+	@TmsLink("Task 30 - Scenario #2")
 	@Test
+	@Description("Verify that user can be added with required fields.")
 	public void verifyAddUserWithRequiredFieldsTest() {
 		userDto.setName(uniqueName);
 		userDto.setSex(Sex.getRandom());
@@ -88,7 +97,9 @@ public class TC_UserAdd {
 		softAssert.assertAll();
 	}
 
+	@TmsLink("Task 30 - Scenario #3")
 	@Test
+	@Description("Verify that user can NOT be added with incorrect zip code.")
 	public void verifyAddUserWithIncorrectZipCodeTest() {
 		userDto.setName(uniqueName);
 		userDto.setAge(RandomUtils.nextInt(1, 99));
@@ -105,7 +116,10 @@ public class TC_UserAdd {
 		softAssert.assertAll();
 	}
 
+	@Issue("IS-11111")
+	@TmsLink("Task 30 - Scenario #4")
 	@Test
+	@Description("Verify that user can NOT be added with the same name and sex as existing user in the system.")
 	public void verifyAddNotUniqueUserTest() {
 		userDto.setName(uniqueName);
 		userDto.setSex(Sex.getRandom());
@@ -123,7 +137,10 @@ public class TC_UserAdd {
 		softAssert.assertAll();
 	}
 
+	@Issue("IS-11112")
+	@TmsLink("Task 30 - Additional scenario")
 	@Test
+	@Description("Verify that user can NOT be added without required fields and zip code is NOT removed from available zip codes of application.")
 	public void verifyAddUserWithoutRequiredFieldsTest() {
 		String addZipCode = ZipCodeService.getAvailableZipCodes().second().get(0);
 		userDto.setAge(RandomUtils.nextInt(1, 99));

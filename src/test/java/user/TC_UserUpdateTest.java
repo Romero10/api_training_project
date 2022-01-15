@@ -6,6 +6,10 @@ import api.training.dto.UserDto;
 import api.training.services.UserService;
 import api.training.services.ZipCodeService;
 import com.beust.jcommander.internal.Lists;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Issue;
+import io.qameta.allure.TmsLink;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
@@ -19,7 +23,8 @@ import org.testng.internal.collections.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TC_UserUpdate {
+@Feature("Users")
+public class TC_UserUpdateTest {
 
 	private final static String NAME = "Kirill";
 
@@ -58,7 +63,9 @@ public class TC_UserUpdate {
 		UserService.createUser(userDto);
 	}
 
+	@TmsLink("Task 50 - Scenario #1")
 	@Test(dataProvider = "updateRequest")
+	@Description("Verify that user can be updated.")
 	public void verifyUpdateUserTest(String methodName) {
 		UserDto userUpdateDto = new UserDto();
 		int newAge = RandomUtils.nextInt(1, 99);
@@ -84,7 +91,10 @@ public class TC_UserUpdate {
 		softAssert.assertAll();
 	}
 
+	@Issue("IS-33333")
+	@TmsLink("Task 50 - Scenario #2")
 	@Test(dataProvider = "updateRequest")
+	@Description("Verify that user can NOT be updated with incorrect zip code.")
 	public void verifyUpdateUserWithIncorrectZipCodeTest(String methodName) {
 		UserDto userUpdateDto = new UserDto();
 		int newAge = RandomUtils.nextInt(1, 99);
@@ -119,7 +129,9 @@ public class TC_UserUpdate {
 		Assert.assertEquals(actualAge, newAge, "User is updated when updating a user with incorrect zip code.");
 	}
 
+	@TmsLink("Task 50 - Scenario #3")
 	@Test(dataProvider = "updateRequest")
+	@Description("Verify that user can NOT be updated if required fields are missed.")
 	public void verifyUpdateUserWithRequiredFieldsMissedTest(String methodName) {
 		UserDto userUpdateDto = new UserDto();
 		int newAge = RandomUtils.nextInt(1, 99);
@@ -142,7 +154,9 @@ public class TC_UserUpdate {
 		softAssert.assertAll();
 	}
 
+	@TmsLink("Task 50 - Additional scenario")
 	@Test(dataProvider = "updateRequest")
+	@Description("Verify that user can NOT be updated when updating a user to change without required fields using.")
 	public void verifyInitialUserWithoutRequiredFieldsTest(String methodName) {
 		UserDto initialUser = new UserDto();
 		initialUser.setAge(userDto.getAge());

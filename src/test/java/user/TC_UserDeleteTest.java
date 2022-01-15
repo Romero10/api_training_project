@@ -5,6 +5,10 @@ import api.training.dto.UserDto;
 import api.training.services.UserService;
 import api.training.services.ZipCodeService;
 import com.beust.jcommander.internal.Lists;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Issue;
+import io.qameta.allure.TmsLink;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
@@ -18,7 +22,8 @@ import org.testng.internal.collections.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TC_UserDelete {
+@Feature("Users")
+public class TC_UserDeleteTest {
 
 	private final static String NAME = "Anton";
 
@@ -43,7 +48,9 @@ public class TC_UserDelete {
 		ZipCodeService.addZipCodes(Lists.newArrayList(zipCode));
 	}
 
+	@TmsLink("Task 60 - Scenario #1")
 	@Test
+	@Description("Verify that user can be removed and zip code is returned in list of available zip codes of application.")
 	public void verifyRemoveUserTest() {
 		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
@@ -67,7 +74,10 @@ public class TC_UserDelete {
 		softAssert.assertAll();
 	}
 
+	@Issue("IS-22222")
+	@TmsLink("Task 60 - Scenario #2")
 	@Test
+	@Description("Verify that user can be removed with required fields and zip code is returned in list of available zip codes of application.")
 	public void verifyRemoveUserWithRequiredFieldsTest() {
 		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
@@ -95,7 +105,9 @@ public class TC_UserDelete {
 		softAssert.assertAll();
 	}
 
+	@TmsLink("Task 60 - Scenario #3")
 	@Test
+	@Description("Verify that user can NOT be removed if any required field is missed and zip code is NOT returned in list of available zip codes of application.")
 	public void verifyRemoveUserAnyRequiredFieldMissedTest() {
 		String uniqueName = NAME + RandomStringUtils.randomAlphabetic(4);
 		userDto.setName(uniqueName);
@@ -112,7 +124,7 @@ public class TC_UserDelete {
 
 		int statusCode = UserService.deleteUser(deleteUser);
 		softAssert.assertEquals(statusCode, HttpStatus.SC_CONFLICT,
-				"Response code is NOT 409 when removing a user (any required field is missed).");
+				"Response code is NOT 409 when removing a user ().");
 
 		softAssert.assertEquals(UserService.findUsersBy(uniqueName).size(),
 				1, "User is deleted when removing a user (any required field is missed).");
