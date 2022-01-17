@@ -39,9 +39,7 @@ public class UserDto implements IModel {
 		if (o == null || getClass() != o.getClass()) return false;
 		UserDto userDto = (UserDto) o;
 		return new EqualsBuilder()
-				.append(age, userDto.age)
 				.append(getComplexKey(), userDto.getComplexKey())
-				.append(zipCode, userDto.zipCode)
 				.isEquals();
 	}
 
