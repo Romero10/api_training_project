@@ -2,6 +2,7 @@ package api.training.services;
 
 import api.training.dto.TokenDto;
 import api.training.services.end_points.EndPoints;
+import api.training.utils.aspects.HealthCheck;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 
@@ -24,6 +25,7 @@ public class AuthenticationService extends BaseService {
 		return instance;
 	}
 
+	@HealthCheck
 	public synchronized TokenDto getToken(String scope) {
 		if (!tokens.containsKey(scope)) {
 			HttpUriRequest request = RequestBuilder.post()

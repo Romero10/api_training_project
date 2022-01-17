@@ -53,4 +53,11 @@ public class Exceptions {
 			super("Allure cannot add attachment.", e);
 		}
 	}
+
+	//Connection
+	public static class ConnectionException extends RuntimeException {
+		public ConnectionException() {
+			super("Lost connection to tested app.");
+		}
+	}
 }
