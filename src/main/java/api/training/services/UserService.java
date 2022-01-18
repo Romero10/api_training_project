@@ -6,6 +6,7 @@ import api.training.dto.UserDto;
 import api.training.exceptions.Exceptions;
 import api.training.services.end_points.EndPoints;
 import api.training.utils.AllureUtils;
+import api.training.utils.aspects.HealthCheck;
 import io.qameta.allure.Step;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -80,6 +81,7 @@ public class UserService extends BaseService {
 		return request(request.build());
 	}
 
+	@HealthCheck
 	@Step("Upload some users from {fileName} file")
 	public static Pair<Integer, String> uploadUsersFrom(String fileName) {
 		Header headerToken = getTokenHeader(SCOPE_WRITE);
@@ -100,6 +102,7 @@ public class UserService extends BaseService {
 		return requestToString(request);
 	}
 
+	@HealthCheck
 	private static RequestBuilder getUserRequest(String scope, String method) {
 		Header headerToken = getTokenHeader(scope);
 		return RequestBuilder.create(method)

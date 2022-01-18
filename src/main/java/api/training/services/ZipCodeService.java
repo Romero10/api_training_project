@@ -1,6 +1,7 @@
 package api.training.services;
 
 import api.training.services.end_points.EndPoints;
+import api.training.utils.aspects.HealthCheck;
 import io.qameta.allure.Step;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -20,6 +21,7 @@ public class ZipCodeService extends BaseService {
 
 	}
 
+	@HealthCheck
 	@Step("Get all available zip codes in the application")
 	public static Pair<Integer, List<String>> getAvailableZipCodes() {
 		Header headerToken = getTokenHeader(SCOPE_READ);
@@ -32,6 +34,7 @@ public class ZipCodeService extends BaseService {
 		return Pair.of(pair.first(), Arrays.stream(pair.second()).collect(Collectors.toList()));
 	}
 
+	@HealthCheck
 	@Step("Create a list of zip codes: {zipCodes}")
 	public static int addZipCodes(List<String> zipCodes) {
 		Header headerToken = getTokenHeader(SCOPE_WRITE);

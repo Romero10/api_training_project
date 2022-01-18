@@ -1,0 +1,7 @@
+<aspectj>
+	<aspects>
+		<aspects>
+			<aspect name="api.training.utils.aspects.AspectConnection"/>
+		</aspects>
+	</aspects>
+</aspectj>

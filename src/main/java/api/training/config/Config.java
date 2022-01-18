@@ -9,8 +9,11 @@ public class Config {
 
 	private static Config instance = null;
 
-	@Property("main.url")
-	private String url;
+	@Property("main.host")
+	private String host;
+
+	@Property("main.port")
+	private int port;
 
 	@Property("credentials.username")
 	private String userName;
@@ -30,7 +33,15 @@ public class Config {
 	}
 
 	public String getUrl() {
-		return url;
+		return "http://" + getHost() + ":" + getPort();
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public int getPort() {
+		return port;
 	}
 
 	public String getUserName() {
