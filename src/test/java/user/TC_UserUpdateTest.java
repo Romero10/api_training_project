@@ -83,8 +83,8 @@ public class TC_UserUpdateTest {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_OK,
 				"Response code is NOT 200 when updating a user.");
 
-		List<UserDto> userDtoList = UserService.getUsers().second();
-		softAssert.assertFalse(userDtoList.contains(userDto), "Actual list of users have old user.");
+		List<UserDto> userDtoList = UserService.findUsersBy(userDto.getName(), userDto.getSex());
+		softAssert.assertNotEquals(userDtoList.get(0).getAge(), userDto.getAge(), "Actual list of users have old user.");
 
 		int actualAge = UserService.findUsersBy(userUpdateDto.getName(), userUpdateDto.getSex()).get(0).getAge();
 		softAssert.assertEquals(actualAge, newAge, "User is NOT updated.");
@@ -126,7 +126,7 @@ public class TC_UserUpdateTest {
 		softAssert.assertAll();
 
 		int actualAge = updatedUser.get(0).getAge();
-		Assert.assertEquals(actualAge, newAge, "User is updated when updating a user with incorrect zip code.");
+		Assert.assertNotEquals(actualAge, newAge, "User is updated when updating a user with incorrect zip code.");
 	}
 
 	@TmsLink("Task 50 - Scenario #3")
