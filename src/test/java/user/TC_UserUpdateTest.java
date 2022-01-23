@@ -148,8 +148,8 @@ public class TC_UserUpdateTest {
 		softAssert.assertEquals(statusCode, HttpStatus.SC_CONFLICT,
 				"Response code is NOT 409 when updating a user with required fields are missed.");
 
-		softAssert.assertEquals(UserService.findUsersBy(userDto.getName()).size(), 0,
-				"User is updated when updating a user with required fields are missed.");
+		int actualAge = UserService.findUsersBy(userDto.getName()).get(0).getAge();
+		softAssert.assertNotEquals(actualAge, newAge, "User is updated correctly when updating a user with required fields are missed.");
 
 		softAssert.assertAll();
 	}
